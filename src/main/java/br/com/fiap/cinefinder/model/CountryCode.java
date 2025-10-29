@@ -1,4 +1,4 @@
-package br.com.fiap.cinefinder.model.localization;
+package br.com.fiap.cinefinder.model;
 
 public enum CountryCode {
     US("United States"),

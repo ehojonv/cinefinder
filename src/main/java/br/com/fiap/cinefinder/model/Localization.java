@@ -1,4 +1,4 @@
-package br.com.fiap.cinefinder.model.localization;
+package br.com.fiap.cinefinder.model;
 
 import jakarta.persistence.Embeddable;
 import lombok.EqualsAndHashCode;

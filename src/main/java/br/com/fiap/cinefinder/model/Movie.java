@@ -1,4 +1,4 @@
-package br.com.fiap.cinefinder.model.movie;
+package br.com.fiap.cinefinder.model;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -6,8 +6,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.fiap.cinefinder.model.genre.Genre;
-import br.com.fiap.cinefinder.model.review.Review;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -17,9 +15,9 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Builder.Default;
 
 @Data
 @Builder

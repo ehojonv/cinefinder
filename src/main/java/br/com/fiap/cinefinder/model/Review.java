@@ -1,14 +1,12 @@
-package br.com.fiap.cinefinder.model.review;
+package br.com.fiap.cinefinder.model;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-import br.com.fiap.cinefinder.model.appUser.AppUser;
-import br.com.fiap.cinefinder.model.localization.Localization;
-import br.com.fiap.cinefinder.model.movie.Movie;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -36,8 +34,10 @@ public class Review {
     @NotBlank
     private String comment;
 
+    @ManyToOne
     private Movie movie;
 
+    @ManyToOne
     private AppUser author;
 
     @Embedded

@@ -1,4 +1,4 @@
-package br.com.fiap.cinefinder.model.genre;
+package br.com.fiap.cinefinder.model;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
