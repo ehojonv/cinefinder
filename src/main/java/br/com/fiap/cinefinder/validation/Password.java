@@ -13,7 +13,7 @@ import jakarta.validation.Payload;
 @Constraint(validatedBy = PasswordValidator.class)
 public @interface Password {
 
-    String message() default "{icon.invalid}";
+    String message() default "{password.invalid.message}";
 
 	Class<?>[] groups() default { };
 
