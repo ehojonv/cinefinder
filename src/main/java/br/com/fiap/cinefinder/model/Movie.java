@@ -9,6 +9,7 @@ import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
@@ -39,6 +40,7 @@ public class Movie {
     private String synopsis;
 
     @Default
+    @OneToMany
     private List<Genre> genres = new ArrayList<Genre>();
 
     @PastOrPresent
@@ -48,6 +50,7 @@ public class Movie {
     private Double rating;
 
     @Default
+    @OneToMany
     private List<Review> reviews = new ArrayList<Review>();
 
     public void addGenre(Genre genre) {

@@ -11,18 +11,12 @@ public record GetUserDto(
     LocalDate birthDate
 ) {
 
-    private static GetUserDto fromAppUser(AppUser user){
+    public static GetUserDto fromAppUser(AppUser user){
         return new GetUserDto(
             user.getUsername(),
             user.getEmail(),
             user.getDateOfBirth()
         );
-    } 
-
-    public static List<GetUserDto> fromAppUserList(List<AppUser> users){
-        return users.stream()
-            .map(GetUserDto::fromAppUser)
-            .toList();
     }
     
 }
