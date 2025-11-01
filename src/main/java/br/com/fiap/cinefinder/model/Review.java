@@ -2,7 +2,6 @@ package br.com.fiap.cinefinder.model;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -32,7 +31,7 @@ public class Review {
     private String title;
 
     @NotBlank
-    private String comment;
+    private String comments;
 
     @ManyToOne
     private Movie movie;
@@ -40,22 +39,19 @@ public class Review {
     @ManyToOne
     private AppUser author;
 
-    @Embedded
-    private Localization localization;
+    @NotBlank
+    private String localization;
 
     @PositiveOrZero
     private Double rate;
 
     public void associateToMovie(Movie movie) {
         this.movie = movie;
+        movie.addReview(this);
     }
 
     public void associateToAuthor(AppUser author) {
         this.author = author;
+        author.addReview(this);
     }
-
-    public String getLocationDetails() {
-        return this.localization.getFullAdress();
-    }
-
 }

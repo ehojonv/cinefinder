@@ -46,6 +46,7 @@ public class Flow {
 
     public void associateToAuthor(AppUser author) {
         this.author = author;
+        author.addFlow(this);
     }
     
 }

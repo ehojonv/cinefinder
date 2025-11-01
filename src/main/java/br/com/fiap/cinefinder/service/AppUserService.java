@@ -51,14 +51,24 @@ public class AppUserService {
 
     }
 
+    public EntityModel<GetUserDto> update(Long id, AppUser updUser) {
+        getById(id);
+        updUser.setId(id);
+        return EntityModel.of(
+                GetUserDto.fromAppUser(
+                        repo.save(updUser)));
+    }
+
+    public EntityModel<GetUserDto> save(AppUser user) {
+        user.setPassword(encoder.encode(user.getPassword()));
+        return EntityModel.of(
+                GetUserDto.fromAppUser(
+                        repo.save(user)));
+    }
+
     private AppUser findByIdOrThrow(Long id) {
         return repo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
-    }
-
-    public void create(AppUser user) {
-        user.setPassword(encoder.encode(user.getPassword()));
-        repo.save(user);
     }
 
 }

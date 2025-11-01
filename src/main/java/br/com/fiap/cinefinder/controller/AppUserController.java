@@ -20,6 +20,8 @@ import br.com.fiap.cinefinder.filters.Specifications;
 import br.com.fiap.cinefinder.filters.UserFilter;
 import br.com.fiap.cinefinder.model.AppUser;
 import br.com.fiap.cinefinder.service.AppUserService;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @RequestMapping("users")
@@ -45,9 +47,15 @@ public class AppUserController {
 
     @PostMapping
     @ResponseStatus(code = CREATED)
-    public void createUser(@RequestBody AppUser user) {
-        service.create(user);
+    public EntityModel<GetUserDto> createUser(@RequestBody AppUser user) {
+        return service.save(user);
 
+    }
+
+    @PutMapping("{id}")
+    public EntityModel<GetUserDto> updateUser(@PathVariable Long id, @RequestBody AppUser updUser) {
+        return service.update(id, updUser);
+        
     }
 
 
