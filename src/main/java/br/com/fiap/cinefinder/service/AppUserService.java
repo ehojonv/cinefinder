@@ -20,55 +20,56 @@ import br.com.fiap.cinefinder.repository.AppUserRepo;
 @Service
 public class AppUserService {
 
-    private final AppUserRepo repo;
-    private final PasswordEncoder encoder;
+        private final AppUserRepo repo;
+        private final PasswordEncoder encoder;
 
-    public AppUserService(AppUserRepo repo, PasswordEncoder encoder) {
-        this.repo = repo;
-        this.encoder = encoder;
-    }
+        public AppUserService(AppUserRepo repo, PasswordEncoder encoder) {
+                this.repo = repo;
+                this.encoder = encoder;
+        }
 
-    public Page<AppUser> getAll(Specification<AppUser> specs, Pageable pageable) {
-        return repo.findAll(specs, pageable);
-    }
+        public Page<EntityModel<GetUserDto>> getAll(Specification<AppUser> specs, Pageable pageable) {
+                return repo.findAll(specs, pageable).map(AppUserService::toModel);
+        }
 
-    public EntityModel<GetUserDto> getById(Long id) {
-        var resource = EntityModel.of(
-                GetUserDto.fromAppUser(
-                        findByIdOrThrow(id)));
+        public EntityModel<GetUserDto> getById(Long id) {
+                return toModel(findByIdOrThrow(id));
+        }
 
-        resource.add(
-                linkTo(
-                        methodOn(AppUserController.class)
-                                .getUserById(id))
-                        .withSelfRel(),
-                linkTo(
-                        methodOn(AppUserController.class)
-                                .getAllUsers(null, Pageable.unpaged()))
-                        .withRel("all-users"));
+        public EntityModel<GetUserDto> update(Long id, AppUser updUser) {
+                getById(id);
+                updUser.setId(id);
+                return save(updUser);
+        }
 
-        return resource;
+        public EntityModel<GetUserDto> save(AppUser user) {
+                user.setPassword(encoder.encode(user.getPassword()));
+                return toModel(repo.save(user));
+        }
 
-    }
+        public void delete(Long id) {
+                repo.deleteById(id);
+        }
 
-    public EntityModel<GetUserDto> update(Long id, AppUser updUser) {
-        getById(id);
-        updUser.setId(id);
-        return EntityModel.of(
-                GetUserDto.fromAppUser(
-                        repo.save(updUser)));
-    }
+        private AppUser findByIdOrThrow(Long id) {
+                return repo.findById(id)
+                                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
+        }
 
-    public EntityModel<GetUserDto> save(AppUser user) {
-        user.setPassword(encoder.encode(user.getPassword()));
-        return EntityModel.of(
-                GetUserDto.fromAppUser(
-                        repo.save(user)));
-    }
+        private static EntityModel<GetUserDto> toModel(AppUser user) {
+                var resource = EntityModel.of(GetUserDto.fromAppUser(user));
 
-    private AppUser findByIdOrThrow(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
-    }
+                resource.add(
+                                linkTo(
+                                                methodOn(AppUserController.class)
+                                                                .getUserById(user.getId()))
+                                                .withSelfRel(),
+                                linkTo(
+                                                methodOn(AppUserController.class)
+                                                                .getAllUsers(null, Pageable.unpaged()))
+                                                .withRel("all-users"));
+
+                return resource;
+        }
 
 }
