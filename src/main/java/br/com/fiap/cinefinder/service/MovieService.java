@@ -46,7 +46,7 @@ public class MovieService {
         repo.deleteById(id);
     }
 
-    private Movie findByIdOrThrow(Long id) {
+    public Movie findByIdOrThrow(Long id) {
         return repo.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Movie not found"));
     }
 

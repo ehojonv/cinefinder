@@ -9,7 +9,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,10 +25,8 @@ public class Review {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @NotBlank
     private String title;
 
-    @NotBlank
     private String comments;
 
     @ManyToOne
@@ -43,12 +40,12 @@ public class Review {
     @NotBlank
     private String localization;
 
-    @PositiveOrZero
     private Double rate;
 
     public void associateToMovie(Movie movie) {
         this.movie = movie;
         movie.addReview(this);
+        movie.calculateRating();
     }
 
     public void associateToAuthor(AppUser author) {

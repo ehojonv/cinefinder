@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.cinefinder.controller.AppUserController;
 import br.com.fiap.cinefinder.dto.GetUserDto;
+import br.com.fiap.cinefinder.dto.UserDto;
 import br.com.fiap.cinefinder.model.AppUser;
 import br.com.fiap.cinefinder.repository.AppUserRepo;
 
@@ -36,14 +37,23 @@ public class AppUserService {
                 return toModel(findByIdOrThrow(id));
         }
 
-        public EntityModel<GetUserDto> update(Long id, AppUser updUser) {
-                getById(id);
-                updUser.setId(id);
-                return save(updUser);
+        public EntityModel<GetUserDto> update(Long id, UserDto updUser) {
+                var existing = findByIdOrThrow(id);
+                existing.setUsername(updUser.username() != null ? updUser.username() : existing.getUsername());
+                existing.setEmail(updUser.email() != null ? updUser.email() : existing.getEmail());
+                existing.setDateOfBirth(
+                                updUser.dateOfBirth() != null ? updUser.dateOfBirth() : existing.getDateOfBirth());
+                existing.setPassword(updUser.password() != null ? updUser.password() : existing.getPassword());
+                return toModel(repo.save(existing));
         }
 
-        public EntityModel<GetUserDto> save(AppUser user) {
-                user.setPassword(encoder.encode(user.getPassword()));
+        public EntityModel<GetUserDto> save(UserDto pstUser) {
+                var user = AppUser.builder()
+                                .username(pstUser.username())
+                                .email(pstUser.email())
+                                .dateOfBirth(pstUser.dateOfBirth())
+                                .password(encoder.encode(pstUser.password()))
+                                .build();
                 return toModel(repo.save(user));
         }
 
@@ -51,9 +61,9 @@ public class AppUserService {
                 repo.deleteById(id);
         }
 
-        private AppUser findByIdOrThrow(Long id) {
+        public AppUser findByIdOrThrow(Long id) {
                 return repo.findById(id)
-                                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
+                                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Usuário não encontrado"));
         }
 
         private static EntityModel<GetUserDto> toModel(AppUser user) {

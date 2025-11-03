@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.fiap.cinefinder.dto.GetFlowDto;
 import br.com.fiap.cinefinder.model.Flow;
 import br.com.fiap.cinefinder.service.FlowService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,26 +34,26 @@ public class FlowController {
     }
 
     @GetMapping
-    public Page<EntityModel<GetFlowDto>> getAllFlows(@PageableDefault(size = 10, sort = "title", direction = Direction.DESC) Pageable pageable) {
+    public Page<EntityModel<Flow>> getAllFlows(@PageableDefault(size = 10, sort = "id", direction = Direction.DESC) Pageable pageable) {
         log.info("recuperando todos os flows");
         return service.getAll(pageable);
     }
 
     @GetMapping("{id}")
-    public EntityModel<GetFlowDto> getFlowById(@PathVariable Long id) {
+    public EntityModel<Flow> getFlowById(@PathVariable Long id) {
         log.info("recuperando flow pelo id: {}", id);
         return service.getById(id);
     }
 
     @PostMapping
     @ResponseStatus(code = CREATED)
-    public EntityModel<GetFlowDto> createFlow(@RequestBody Flow flow) {
+    public EntityModel<Flow> createFlow(@RequestBody Flow flow) {
         log.info("criando novo flow: {}", flow);
         return service.save(flow);
     }
 
     @PutMapping("{id}")
-    public EntityModel<GetFlowDto> updateFlow(@PathVariable Long id, @RequestBody Flow upd) {
+    public EntityModel<Flow> updateFlow(@PathVariable Long id, @RequestBody Flow upd) {
         log.info("atualizando flow id: {} com os dados: {}", id, upd);
         return service.update(id, upd);
     }

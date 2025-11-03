@@ -2,7 +2,6 @@ package br.com.fiap.cinefinder.validation;
 
 import java.util.regex.Pattern;
 
-import br.com.fiap.cinefinder.expection.InvalidPasswordException;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -19,13 +18,8 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
         // especial
         final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
 
-        var isValid = Pattern.matches(PASSWORD_REGEX, password);
+        return Pattern.matches(PASSWORD_REGEX, password);
 
-        if (!isValid) {
-            throw new InvalidPasswordException("Password does not meet the required criteria.");
-        }
-
-        return true;
     }
 
 }

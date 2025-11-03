@@ -15,10 +15,6 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
@@ -37,10 +33,8 @@ public class Movie {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @NotBlank
     private String title;
 
-    @Size(min = 10, max = 2000)
     private String synopsis;
 
     @Default
@@ -52,10 +46,8 @@ public class Movie {
     )
     private List<Genre> genres = new ArrayList<Genre>();
 
-    @PastOrPresent
     private LocalDate releaseDate;
 
-    @PositiveOrZero
     @Column(columnDefinition = "NUMERIC(4,2) DEFAULT 0")
     private Double rating;
 

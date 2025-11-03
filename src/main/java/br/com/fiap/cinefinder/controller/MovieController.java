@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.fiap.cinefinder.dto.GetMovieDto;
 import br.com.fiap.cinefinder.model.Movie;
 import br.com.fiap.cinefinder.service.MovieService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -35,7 +36,7 @@ public class MovieController {
     }
 
     @GetMapping
-    public Page<EntityModel<GetMovieDto>> getAllMovies(@PageableDefault(size = 10, sort = "title", direction = Direction.DESC) Pageable pageable) {
+    public Page<EntityModel<GetMovieDto>> getAllMovies(@PageableDefault(size = 10, sort = "id", direction = Direction.DESC) Pageable pageable) {
         log.info("recuperando todos os movies");
         return service.getAll(pageable);
     }

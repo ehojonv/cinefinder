@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.fiap.cinefinder.dto.GetGenreDto;
 import br.com.fiap.cinefinder.model.Genre;
 import br.com.fiap.cinefinder.service.GenreService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,26 +34,26 @@ public class GenreController {
     }
 
     @GetMapping
-    public Page<EntityModel<GetGenreDto>> getAllGenres(@PageableDefault(size = 10, sort = "name", direction = Direction.DESC) Pageable pageable) {
+    public Page<EntityModel<Genre>> getAllGenres(@PageableDefault(size = 10, sort = "id", direction = Direction.DESC) Pageable pageable) {
         log.info("recuperando todos os genres");
         return service.getAll(pageable);
     }
 
     @GetMapping("{id}")
-    public EntityModel<GetGenreDto> getGenreById(@PathVariable Long id) {
+    public EntityModel<Genre> getGenreById(@PathVariable Long id) {
         log.info("recuperando genre pelo id: {}", id);
         return service.getById(id);
     }
 
     @PostMapping
     @ResponseStatus(code = CREATED)
-    public EntityModel<GetGenreDto> createGenre(@RequestBody Genre genre) {
+    public EntityModel<Genre> createGenre(@RequestBody Genre genre) {
         log.info("criando novo genre: {}", genre);
         return service.save(genre);
     }
 
     @PutMapping("{id}")
-    public EntityModel<GetGenreDto> updateGenre(@PathVariable Long id, @RequestBody Genre upd) {
+    public EntityModel<Genre> updateGenre(@PathVariable Long id, @RequestBody Genre upd) {
         log.info("atualizando genre id: {} com os dados: {}", id, upd);
         return service.update(id, upd);
     }

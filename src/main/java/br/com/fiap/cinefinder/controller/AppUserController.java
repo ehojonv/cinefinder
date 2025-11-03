@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.cinefinder.dto.GetUserDto;
+import br.com.fiap.cinefinder.dto.UserDto;
 import br.com.fiap.cinefinder.filters.Specifications;
 import br.com.fiap.cinefinder.filters.UserFilter;
 import br.com.fiap.cinefinder.model.AppUser;
@@ -38,7 +39,7 @@ public class AppUserController {
 
     @GetMapping
     public Page<EntityModel<GetUserDto>> getAllUsers(UserFilter filter,
-            @PageableDefault(size = 10, sort = "username", direction = Direction.DESC) Pageable pageable) {
+            @PageableDefault(size = 10, sort = "id", direction = Direction.DESC) Pageable pageable) {
         log.info("recuperando todos os usuarios com filtro: {}", filter);
         var specs = Specifications.buildUser(filter);
         return service.getAll(specs, pageable);
@@ -52,14 +53,14 @@ public class AppUserController {
 
     @PostMapping
     @ResponseStatus(code = CREATED)
-    public EntityModel<GetUserDto> createUser(@RequestBody AppUser user) {
+    public EntityModel<GetUserDto> createUser(@RequestBody UserDto user) {
         log.info("criando novo usuário: {}", user);
         return service.save(user);
 
     }
 
     @PutMapping("{id}")
-    public EntityModel<GetUserDto> updateUser(@PathVariable Long id, @RequestBody AppUser updUser) {
+    public EntityModel<GetUserDto> updateUser(@PathVariable Long id, @RequestBody UserDto updUser) {
         log.info("atualizando usuário id: {} com os dados: {}", id, updUser);
         return service.update(id, updUser);
 

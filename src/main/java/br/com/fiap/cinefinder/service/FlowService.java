@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.cinefinder.controller.FlowController;
-import br.com.fiap.cinefinder.dto.GetFlowDto;
 import br.com.fiap.cinefinder.model.Flow;
 import br.com.fiap.cinefinder.repository.FlowRepo;
 
@@ -24,21 +23,21 @@ public class FlowService {
         this.repo = repo;
     }
 
-    public Page<EntityModel<GetFlowDto>> getAll(Pageable pageable) {
+    public Page<EntityModel<Flow>> getAll(Pageable pageable) {
         return repo.findAll(pageable).map(FlowService::toModel);
     }
 
-    public EntityModel<GetFlowDto> getById(Long id) {
+    public EntityModel<Flow> getById(Long id) {
         return toModel(findByIdOrThrow(id));
     }
 
-    public EntityModel<GetFlowDto> update(Long id, Flow upd) {
+    public EntityModel<Flow> update(Long id, Flow upd) {
         getById(id);
         upd.setId(id);
         return save(upd);
     }
 
-    public EntityModel<GetFlowDto> save(Flow flow) {
+    public EntityModel<Flow> save(Flow flow) {
         return toModel(repo.save(flow));
     }
 
@@ -46,16 +45,15 @@ public class FlowService {
         repo.deleteById(id);
     }
 
-    private Flow findByIdOrThrow(Long id) {
+    public Flow findByIdOrThrow(Long id) {
         return repo.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Flow not found"));
     }
 
-    private static EntityModel<GetFlowDto> toModel(Flow f) {
-        var resource = EntityModel.of(GetFlowDto.fromFlow(f));
+    private static EntityModel<Flow> toModel(Flow f) {
+        var resource = EntityModel.of(f);
         resource.add(
                 linkTo(methodOn(FlowController.class).getFlowById(f.getId())).withSelfRel(),
-                linkTo(methodOn(FlowController.class).getAllFlows(Pageable.unpaged())).withRel("all-flows")
-        );
+                linkTo(methodOn(FlowController.class).getAllFlows(Pageable.unpaged())).withRel("all-flows"));
         return resource;
     }
 

@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.cinefinder.dto.GetReviewDto;
-import br.com.fiap.cinefinder.model.Review;
+import br.com.fiap.cinefinder.dto.ReviewDto;
+import br.com.fiap.cinefinder.filters.ReviewFilter;
+import br.com.fiap.cinefinder.filters.Specifications;
 import br.com.fiap.cinefinder.service.ReviewService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,9 +37,11 @@ public class ReviewController {
     }
 
     @GetMapping
-    public Page<EntityModel<GetReviewDto>> getAllReviews(@PageableDefault(size = 10, sort = "title", direction = Direction.DESC) Pageable pageable) {
+    public Page<EntityModel<GetReviewDto>> getAllReviews(ReviewFilter filter,
+            @PageableDefault(size = 10, sort = "id", direction = Direction.DESC) Pageable pageable) {
         log.info("recuperando todos os reviews");
-        return service.getAll(pageable);
+        var specs = Specifications.buildReview(filter);
+        return service.getAll(specs, pageable);
     }
 
     @GetMapping("{id}")
@@ -48,13 +52,13 @@ public class ReviewController {
 
     @PostMapping
     @ResponseStatus(code = CREATED)
-    public EntityModel<GetReviewDto> createReview(@RequestBody Review review) {
+    public EntityModel<GetReviewDto> createReview(@RequestBody ReviewDto review) {
         log.info("criando novo review: {}", review);
         return service.save(review);
     }
 
     @PutMapping("{id}")
-    public EntityModel<GetReviewDto> updateReview(@PathVariable Long id, @RequestBody Review upd) {
+    public EntityModel<GetReviewDto> updateReview(@PathVariable Long id, @RequestBody ReviewDto upd) {
         log.info("atualizando review id: {} com os dados: {}", id, upd);
         return service.update(id, upd);
     }
