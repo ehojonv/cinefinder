@@ -4,6 +4,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
@@ -12,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.cinefinder.controller.MovieController;
 import br.com.fiap.cinefinder.dto.GetMovieDto;
+import br.com.fiap.cinefinder.dto.MovieDto;
 import br.com.fiap.cinefinder.model.Movie;
 import br.com.fiap.cinefinder.repository.MovieRepo;
 
@@ -19,9 +22,13 @@ import br.com.fiap.cinefinder.repository.MovieRepo;
 public class MovieService {
 
     private final MovieRepo repo;
+    private final ReviewService reviewService;
+    private final GenreService genreService;
 
-    public MovieService(MovieRepo repo) {
+    public MovieService(MovieRepo repo, ReviewService reviewService, GenreService genreService) {
         this.repo = repo;
+        this.reviewService = reviewService;
+        this.genreService = genreService;
     }
 
     public Page<EntityModel<GetMovieDto>> getAll(Pageable pageable) {
@@ -32,13 +39,23 @@ public class MovieService {
         return toModel(findByIdOrThrow(id));
     }
 
-    public EntityModel<GetMovieDto> update(Long id, Movie upd) {
-        getById(id);
-        upd.setId(id);
+    public EntityModel<GetMovieDto> update(Long id, MovieDto upd) {
+        var existing = findByIdOrThrow(id);
+        existing.setTitle(upd.title() != null ? upd.title() : existing.getTitle());
+        existing.setSynopsis(upd.synopsis() != null ? upd.synopsis() : existing.getSynopsis());
+        existing.setGenres(upd.genresIds() != null ? genreService.findAllByIds(upd.genresIds()) : existing.getGenres());
         return save(upd);
     }
 
-    public EntityModel<GetMovieDto> save(Movie movie) {
+    public EntityModel<GetMovieDto> save(MovieDto movieToSave) {
+        var movie = Movie.builder()
+                .title(movieToSave.title())
+                .synopsis(movieToSave.synopsis())
+                .releaseDate(movieToSave.releaseDate())
+                .genres(genreService.findAllByIds(movieToSave.genresIds()))
+                .build();
+        reviewService.findAllByIds(movieToSave.reviewsIds()).forEach(r -> r.associateToMovie(movie));
+        movie.calculateRating();
         return toModel(repo.save(movie));
     }
 
@@ -54,9 +71,12 @@ public class MovieService {
         var resource = EntityModel.of(GetMovieDto.fromMovie(m));
         resource.add(
                 linkTo(methodOn(MovieController.class).getMovieById(m.getId())).withSelfRel(),
-                linkTo(methodOn(MovieController.class).getAllMovies(Pageable.unpaged())).withRel("all-movies")
-        );
+                linkTo(methodOn(MovieController.class).getAllMovies(Pageable.unpaged())).withRel("all-movies"));
         return resource;
+    }
+
+    public List<Movie> findAllByIds(Long[] movieIds) {
+        return repo.findAllById(List.of(movieIds));
     }
 
 }

@@ -4,6 +4,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.cinefinder.controller.GenreController;
+import br.com.fiap.cinefinder.dto.GenreDto;
 import br.com.fiap.cinefinder.model.Genre;
 import br.com.fiap.cinefinder.repository.GenreRepo;
 
@@ -31,13 +34,16 @@ public class GenreService {
         return toModel(findByIdOrThrow(id));
     }
 
-    public EntityModel<Genre> update(Long id, Genre upd) {
-        getById(id);
-        upd.setId(id);
+    public EntityModel<Genre> update(Long id, GenreDto upd) {
+        var existing = findByIdOrThrow(id);
+        existing.setName(upd.name() != null ? upd.name() : existing.getName());
         return save(upd);
     }
 
-    public EntityModel<Genre> save(Genre genre) {
+    public EntityModel<Genre> save(GenreDto pstGenre) {
+        var genre = Genre.builder()
+                .name(pstGenre.name())
+                .build();
         return toModel(repo.save(genre));
     }
 
@@ -56,6 +62,10 @@ public class GenreService {
                 linkTo(methodOn(GenreController.class).getAllGenres(Pageable.unpaged())).withRel("all-genres")
         );
         return resource;
+    }
+
+    public List<Genre> findAllByIds(Long[] genresIds) {
+        return repo.findAllById(List.of(genresIds));
     }
 
 }

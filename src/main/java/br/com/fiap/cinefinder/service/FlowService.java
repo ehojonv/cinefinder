@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.cinefinder.controller.FlowController;
+import br.com.fiap.cinefinder.dto.FlowDto;
 import br.com.fiap.cinefinder.model.Flow;
 import br.com.fiap.cinefinder.repository.FlowRepo;
 
@@ -18,9 +19,13 @@ import br.com.fiap.cinefinder.repository.FlowRepo;
 public class FlowService {
 
     private final FlowRepo repo;
+    private final AppUserService userService;
+    private final MovieService movieService;
 
-    public FlowService(FlowRepo repo) {
+    public FlowService(FlowRepo repo, AppUserService userService, MovieService movieService) {
         this.repo = repo;
+        this.userService = userService;
+        this.movieService = movieService;
     }
 
     public Page<EntityModel<Flow>> getAll(Pageable pageable) {
@@ -31,13 +36,19 @@ public class FlowService {
         return toModel(findByIdOrThrow(id));
     }
 
-    public EntityModel<Flow> update(Long id, Flow upd) {
-        getById(id);
-        upd.setId(id);
-        return save(upd);
+    public EntityModel<Flow> update(Long id, FlowDto upd) {
+        var existing = findByIdOrThrow(id);
+        existing.setTitle(upd.title() != null ? upd.title() : existing.getTitle());
+        existing.setMovies(movieService.findAllByIds(upd.movieIds()));
+        return toModel(repo.save(existing));
     }
 
-    public EntityModel<Flow> save(Flow flow) {
+    public EntityModel<Flow> save(FlowDto saveFlow) {
+        var flow = Flow.builder()
+            .title(saveFlow.title())
+            .author(userService.findByIdOrThrow(saveFlow.authorId()))
+            .movies(movieService.findAllByIds(saveFlow.movieIds()))
+            .build();
         return toModel(repo.save(flow));
     }
 

@@ -1,5 +1,9 @@
 package br.com.fiap.cinefinder.dto;
 
-public record GenreDto() {
+import jakarta.validation.constraints.NotBlank;
+
+public record GenreDto(
+    @NotBlank String name
+) {
     
 }

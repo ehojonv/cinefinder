@@ -4,6 +4,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -47,7 +49,7 @@ public class ReviewService {
         existing.setLocalization(upd.localization() != null ? upd.localization() : existing.getLocalization());
         existing.setAuthor(userService.findByIdOrThrow(id));
         existing.setMovie(movieService.findByIdOrThrow(id));
-        
+
         return toModel(repo.save(existing));
     }
 
@@ -77,6 +79,10 @@ public class ReviewService {
                 linkTo(methodOn(ReviewController.class).getAllReviews(null, Pageable.unpaged()))
                         .withRel("all-reviews"));
         return resource;
+    }
+
+    public List<Review> findAllByIds(Long[] reviewsIds) {
+        return repo.findAllById(List.of(reviewsIds));
     }
 
 }

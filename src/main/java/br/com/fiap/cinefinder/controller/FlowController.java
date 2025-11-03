@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.fiap.cinefinder.dto.FlowDto;
 import br.com.fiap.cinefinder.model.Flow;
 import br.com.fiap.cinefinder.service.FlowService;
 import lombok.extern.slf4j.Slf4j;
@@ -47,13 +48,13 @@ public class FlowController {
 
     @PostMapping
     @ResponseStatus(code = CREATED)
-    public EntityModel<Flow> createFlow(@RequestBody Flow flow) {
+    public EntityModel<Flow> createFlow(@RequestBody FlowDto flow) {
         log.info("criando novo flow: {}", flow);
         return service.save(flow);
     }
 
     @PutMapping("{id}")
-    public EntityModel<Flow> updateFlow(@PathVariable Long id, @RequestBody Flow upd) {
+    public EntityModel<Flow> updateFlow(@PathVariable Long id, @RequestBody FlowDto upd) {
         log.info("atualizando flow id: {} com os dados: {}", id, upd);
         return service.update(id, upd);
     }

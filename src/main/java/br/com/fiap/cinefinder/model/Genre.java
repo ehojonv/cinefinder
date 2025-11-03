@@ -29,7 +29,6 @@ public class Genre {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @NotBlank
     private String name;
 
     @Default

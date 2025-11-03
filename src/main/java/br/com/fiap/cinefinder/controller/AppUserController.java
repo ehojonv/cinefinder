@@ -22,7 +22,6 @@ import br.com.fiap.cinefinder.dto.GetUserDto;
 import br.com.fiap.cinefinder.dto.UserDto;
 import br.com.fiap.cinefinder.filters.Specifications;
 import br.com.fiap.cinefinder.filters.UserFilter;
-import br.com.fiap.cinefinder.model.AppUser;
 import br.com.fiap.cinefinder.service.AppUserService;
 import lombok.extern.slf4j.Slf4j;
 

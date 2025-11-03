@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,11 +40,7 @@ public class Movie {
 
     @Default
     @ManyToMany
-    @JoinTable(
-        name = "cf_movie_genres",
-        joinColumns = @JoinColumn(name = "movie_id"),
-        inverseJoinColumns = @JoinColumn(name = "genres_id")
-    )
+    @JoinTable(name = "cf_movie_genres", joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "genres_id"))
     private List<Genre> genres = new ArrayList<Genre>();
 
     private LocalDate releaseDate;
@@ -52,7 +49,7 @@ public class Movie {
     private Double rating;
 
     @Default
-    @OneToMany(mappedBy = "movie")
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.MERGE)
     private List<Review> reviews = new ArrayList<Review>();
 
     public void addGenre(Genre genre) {
@@ -61,10 +58,12 @@ public class Movie {
 
     public void addReview(Review review) {
         this.reviews.add(review);
+        calculateRating();
     }
 
     public void removeReview(Review review) {
         this.reviews.remove(review);
+        calculateRating();
     }
 
     public void calculateRating() {

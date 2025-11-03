@@ -33,19 +33,13 @@ public class Flow {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @NotBlank
     private String title;
 
-    @ManyToOne
     private AppUser author;
-    
+
     @Default
     @ManyToMany
-    @JoinTable(
-        name = "cf_flow_movies",
-        joinColumns = @JoinColumn(name = "flow_id"),
-        inverseJoinColumns = @JoinColumn(name = "movies_id")
-    )
+    @JoinTable(name = "cf_flow_movies", joinColumns = @JoinColumn(name = "flow_id"), inverseJoinColumns = @JoinColumn(name = "movies_id"))
     private List<Movie> movies = new ArrayList<>();
 
     public void addMovie(Movie movie) {
@@ -60,5 +54,5 @@ public class Flow {
         this.author = author;
         author.addFlow(this);
     }
-    
+
 }

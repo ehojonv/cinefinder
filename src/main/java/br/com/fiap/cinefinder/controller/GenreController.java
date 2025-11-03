@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.fiap.cinefinder.dto.GenreDto;
 import br.com.fiap.cinefinder.model.Genre;
 import br.com.fiap.cinefinder.service.GenreService;
 import lombok.extern.slf4j.Slf4j;
@@ -47,13 +48,13 @@ public class GenreController {
 
     @PostMapping
     @ResponseStatus(code = CREATED)
-    public EntityModel<Genre> createGenre(@RequestBody Genre genre) {
+    public EntityModel<Genre> createGenre(@RequestBody GenreDto genre) {
         log.info("criando novo genre: {}", genre);
         return service.save(genre);
     }
 
     @PutMapping("{id}")
-    public EntityModel<Genre> updateGenre(@PathVariable Long id, @RequestBody Genre upd) {
+    public EntityModel<Genre> updateGenre(@PathVariable Long id, @RequestBody GenreDto upd) {
         log.info("atualizando genre id: {} com os dados: {}", id, upd);
         return service.update(id, upd);
     }
