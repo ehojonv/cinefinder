@@ -5,6 +5,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -13,16 +14,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 
-
 @Entity
 @Table(name = "cf_review")
 public class Review {
-    
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -34,9 +33,11 @@ public class Review {
     private String comments;
 
     @ManyToOne
+    @JoinColumn(name = "movie_id")
     private Movie movie;
 
     @ManyToOne
+    @JoinColumn(name = "author_id")
     private AppUser author;
 
     @NotBlank

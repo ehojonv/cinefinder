@@ -6,9 +6,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -42,12 +45,18 @@ public class Movie {
 
     @Default
     @ManyToMany
+    @JoinTable(
+        name = "cf_movie_genres",
+        joinColumns = @JoinColumn(name = "movie_id"),
+        inverseJoinColumns = @JoinColumn(name = "genres_id")
+    )
     private List<Genre> genres = new ArrayList<Genre>();
 
     @PastOrPresent
     private LocalDate releaseDate;
 
     @PositiveOrZero
+    @Column(columnDefinition = "NUMERIC(4,2) DEFAULT 0")
     private Double rating;
 
     @Default
