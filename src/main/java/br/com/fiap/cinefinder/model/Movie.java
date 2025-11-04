@@ -68,6 +68,7 @@ public class Movie {
 
     public void calculateRating() {
         this.reviews.stream()
+                .filter(r -> r.getRate() != null && r.getRate() >= 0)
                 .mapToDouble(Review::getRate)
                 .average()
                 .ifPresentOrElse(

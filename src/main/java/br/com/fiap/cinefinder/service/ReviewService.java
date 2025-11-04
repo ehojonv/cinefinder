@@ -42,7 +42,7 @@ public class ReviewService {
         return toModel(findByIdOrThrow(id));
     }
 
-    public EntityModel<GetReviewDto> update(Long id,  ReviewDto upd) {
+    public EntityModel<GetReviewDto> update(Long id, ReviewDto upd) {
 
         var existing = findByIdOrThrow(id);
         existing.setTitle(upd.title() != null ? upd.title() : existing.getTitle());
@@ -53,8 +53,8 @@ public class ReviewService {
         return toModel(repo.save(existing));
     }
 
-    public EntityModel<GetReviewDto> save( ReviewDto nReview) {
-        if (userRepo.existsById(nReview.authorId()) || movieRepo.existsById(nReview.movieId())) {
+    public EntityModel<GetReviewDto> save(ReviewDto nReview) {
+        if (userRepo.existsById(nReview.authorId()) && movieRepo.existsById(nReview.movieId())) {
 
             var review = new Review();
             review.setTitle(nReview.title());
