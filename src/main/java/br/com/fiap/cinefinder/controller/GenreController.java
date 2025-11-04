@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
@@ -19,8 +20,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.cinefinder.dto.GenreDto;
+import br.com.fiap.cinefinder.dto.GetGenreDto;
+import br.com.fiap.cinefinder.filters.GenreFilter;
+import br.com.fiap.cinefinder.filters.Specifications;
 import br.com.fiap.cinefinder.model.Genre;
 import br.com.fiap.cinefinder.service.GenreService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -35,26 +40,28 @@ public class GenreController {
     }
 
     @GetMapping
-    public Page<EntityModel<Genre>> getAllGenres(@PageableDefault(size = 10, sort = "id", direction = Direction.DESC) Pageable pageable) {
+    public Page<EntityModel<GetGenreDto>> getAllGenres(GenreFilter filter,
+        @PageableDefault(size = 10, sort = "id", direction = Direction.DESC) Pageable pageable) {
         log.info("recuperando todos os genres");
-        return service.getAll(pageable);
+        Specification<Genre> specs = Specifications.buildGenre(filter);
+        return service.getAll(specs, pageable);
     }
 
     @GetMapping("{id}")
-    public EntityModel<Genre> getGenreById(@PathVariable Long id) {
+    public EntityModel<GetGenreDto> getGenreById(@PathVariable Long id) {
         log.info("recuperando genre pelo id: {}", id);
         return service.getById(id);
     }
 
     @PostMapping
     @ResponseStatus(code = CREATED)
-    public EntityModel<Genre> createGenre(@RequestBody GenreDto genre) {
+    public EntityModel<GetGenreDto> createGenre(@RequestBody @Valid GenreDto genre) {
         log.info("criando novo genre: {}", genre);
         return service.save(genre);
     }
 
     @PutMapping("{id}")
-    public EntityModel<Genre> updateGenre(@PathVariable Long id, @RequestBody GenreDto upd) {
+    public EntityModel<GetGenreDto> updateGenre(@PathVariable Long id, @RequestBody @Valid GenreDto upd) {
         log.info("atualizando genre id: {} com os dados: {}", id, upd);
         return service.update(id, upd);
     }

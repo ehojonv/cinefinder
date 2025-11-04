@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.cinefinder.dto.GetMovieDto;
 import br.com.fiap.cinefinder.dto.MovieDto;
-import br.com.fiap.cinefinder.model.Movie;
 import br.com.fiap.cinefinder.service.MovieService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -49,13 +49,13 @@ public class MovieController {
 
     @PostMapping
     @ResponseStatus(code = CREATED)
-    public EntityModel<GetMovieDto> createMovie(@RequestBody MovieDto movie) {
+    public EntityModel<GetMovieDto> createMovie(@RequestBody @Valid MovieDto movie) {
         log.info("criando novo movie: {}", movie);
         return service.save(movie);
     }
 
     @PutMapping("{id}")
-    public EntityModel<GetMovieDto> updateMovie(@PathVariable Long id, @RequestBody MovieDto upd) {
+    public EntityModel<GetMovieDto> updateMovie(@PathVariable Long id, @RequestBody @Valid MovieDto upd) {
         log.info("atualizando movie id: {} com os dados: {}", id, upd);
         return service.update(id, upd);
     }

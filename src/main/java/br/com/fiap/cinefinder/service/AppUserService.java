@@ -37,22 +37,22 @@ public class AppUserService {
                 return toModel(findByIdOrThrow(id));
         }
 
-        public EntityModel<GetUserDto> update(Long id, UserDto updUser) {
+        public EntityModel<GetUserDto> update(Long id,  UserDto upd) {
                 var existing = findByIdOrThrow(id);
-                existing.setUsername(updUser.username() != null ? updUser.username() : existing.getUsername());
-                existing.setEmail(updUser.email() != null ? updUser.email() : existing.getEmail());
+                existing.setUsername(upd.username() != null ? upd.username() : existing.getUsername());
+                existing.setEmail(upd.email() != null ? upd.email() : existing.getEmail());
                 existing.setDateOfBirth(
-                                updUser.dateOfBirth() != null ? updUser.dateOfBirth() : existing.getDateOfBirth());
-                existing.setPassword(updUser.password() != null ? updUser.password() : existing.getPassword());
+                                upd.dateOfBirth() != null ? upd.dateOfBirth() : existing.getDateOfBirth());
+                existing.setPassword(upd.password() != null ? upd.password() : existing.getPassword());
                 return toModel(repo.save(existing));
         }
 
-        public EntityModel<GetUserDto> save(UserDto pstUser) {
+        public EntityModel<GetUserDto> save( UserDto nUser) {
                 var user = AppUser.builder()
-                                .username(pstUser.username())
-                                .email(pstUser.email())
-                                .dateOfBirth(pstUser.dateOfBirth())
-                                .password(encoder.encode(pstUser.password()))
+                                .username(nUser.username())
+                                .email(nUser.email())
+                                .dateOfBirth(nUser.dateOfBirth())
+                                .password(encoder.encode(nUser.password()))
                                 .build();
                 return toModel(repo.save(user));
         }

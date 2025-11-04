@@ -1,8 +1,11 @@
 package br.com.fiap.cinefinder.filters;
 
+import java.util.List;
+
 import org.springframework.data.jpa.domain.Specification;
 
 import br.com.fiap.cinefinder.model.AppUser;
+import br.com.fiap.cinefinder.model.Genre;
 import br.com.fiap.cinefinder.model.Review;
 
 public class Specifications {
@@ -63,14 +66,14 @@ public class Specifications {
                 predicates = cb.and(
                         predicates,
                         cb.greaterThanOrEqualTo(root.get("rate"),
-                         filter.minRating().doubleValue()));
+                                filter.minRating().doubleValue()));
             }
 
             if (filter.maxRating() != null) {
                 predicates = cb.and(
                         predicates,
                         cb.lessThanOrEqualTo(root.get("rate"),
-                         filter.maxRating().doubleValue()));
+                                filter.maxRating().doubleValue()));
             }
 
             if (filter.localization() != null) {
@@ -89,6 +92,28 @@ public class Specifications {
                                 "%" + filter.movieTitle().toLowerCase() + "%"));
             }
 
+            return predicates;
+        };
+    }
+
+    public static Specification<Genre> buildGenre(GenreFilter filter) {
+        return (root, query, cb) -> {
+            var predicates = cb.conjunction();
+
+            if (filter.name() != null) {
+                predicates = cb.and(
+                        predicates,
+                        cb.like(
+                                cb.lower(root.get("name")),
+                                "%" + filter.name().toLowerCase() + "%"));
+            }
+
+            if (filter.moviesIds() != null) {
+                predicates = cb.and(
+                        predicates,
+                        root.join("cf_movies").get("id").in(List.of(filter.moviesIds())));
+            }
+            
             return predicates;
         };
     }

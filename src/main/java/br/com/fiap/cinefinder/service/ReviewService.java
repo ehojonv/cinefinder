@@ -17,19 +17,21 @@ import br.com.fiap.cinefinder.controller.ReviewController;
 import br.com.fiap.cinefinder.dto.GetReviewDto;
 import br.com.fiap.cinefinder.dto.ReviewDto;
 import br.com.fiap.cinefinder.model.Review;
+import br.com.fiap.cinefinder.repository.AppUserRepo;
+import br.com.fiap.cinefinder.repository.MovieRepo;
 import br.com.fiap.cinefinder.repository.ReviewRepo;
 
 @Service
 public class ReviewService {
 
     private final ReviewRepo repo;
-    private final MovieService movieService;
-    private final AppUserService userService;
+    private final MovieRepo movieRepo;
+    private final AppUserRepo userRepo;
 
-    public ReviewService(ReviewRepo repo, MovieService movieService, AppUserService userService) {
+    public ReviewService(ReviewRepo repo, MovieRepo movieRepo, AppUserRepo userRepo) {
         this.repo = repo;
-        this.movieService = movieService;
-        this.userService = userService;
+        this.movieRepo = movieRepo;
+        this.userRepo = userRepo;
     }
 
     public Page<EntityModel<GetReviewDto>> getAll(Specification<Review> specs, Pageable pageable) {
@@ -40,28 +42,31 @@ public class ReviewService {
         return toModel(findByIdOrThrow(id));
     }
 
-    public EntityModel<GetReviewDto> update(Long id, ReviewDto upd) {
+    public EntityModel<GetReviewDto> update(Long id,  ReviewDto upd) {
 
         var existing = findByIdOrThrow(id);
         existing.setTitle(upd.title() != null ? upd.title() : existing.getTitle());
         existing.setComments(upd.comments() != null ? upd.comments() : existing.getComments());
         existing.setRate(upd.rate() != null ? upd.rate() : existing.getRate());
         existing.setLocalization(upd.localization() != null ? upd.localization() : existing.getLocalization());
-        existing.setAuthor(userService.findByIdOrThrow(id));
-        existing.setMovie(movieService.findByIdOrThrow(id));
 
         return toModel(repo.save(existing));
     }
 
-    public EntityModel<GetReviewDto> save(ReviewDto pstReview) {
-        var review = new Review();
-        review.setTitle(pstReview.title());
-        review.setComments(pstReview.comments());
-        review.setRate(pstReview.rate());
-        review.setLocalization(pstReview.localization());
-        review.associateToAuthor(userService.findByIdOrThrow(pstReview.authorId()));
-        review.associateToMovie(movieService.findByIdOrThrow(pstReview.movieId()));
-        return toModel(repo.save(review));
+    public EntityModel<GetReviewDto> save( ReviewDto nReview) {
+        if (userRepo.existsById(nReview.authorId()) || movieRepo.existsById(nReview.movieId())) {
+
+            var review = new Review();
+            review.setTitle(nReview.title());
+            review.setComments(nReview.comments());
+            review.setRate(nReview.rate());
+            review.setLocalization(nReview.localization());
+            review.associateToAuthor(userRepo.findById(nReview.authorId()).get());
+            review.associateToMovie(movieRepo.findById(nReview.movieId()).get());
+            return toModel(repo.save(review));
+        }
+
+        throw new ResponseStatusException(NOT_FOUND, "Usuário e/ou filme não encontrado(s)");
     }
 
     public void delete(Long id) {

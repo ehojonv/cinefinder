@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.fiap.cinefinder.dto.FlowDto;
 import br.com.fiap.cinefinder.model.Flow;
 import br.com.fiap.cinefinder.service.FlowService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -48,13 +49,13 @@ public class FlowController {
 
     @PostMapping
     @ResponseStatus(code = CREATED)
-    public EntityModel<Flow> createFlow(@RequestBody FlowDto flow) {
+    public EntityModel<Flow> createFlow(@RequestBody @Valid FlowDto flow) {
         log.info("criando novo flow: {}", flow);
         return service.save(flow);
     }
 
     @PutMapping("{id}")
-    public EntityModel<Flow> updateFlow(@PathVariable Long id, @RequestBody FlowDto upd) {
+    public EntityModel<Flow> updateFlow(@PathVariable Long id, @RequestBody @Valid FlowDto upd) {
         log.info("atualizando flow id: {} com os dados: {}", id, upd);
         return service.update(id, upd);
     }

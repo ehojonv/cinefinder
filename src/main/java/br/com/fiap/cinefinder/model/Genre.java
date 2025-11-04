@@ -10,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
@@ -35,7 +34,7 @@ public class Genre {
     @ManyToMany(mappedBy = "genres")
     private List<Movie> movies = new ArrayList<>();
 
-    public void normalizeName() {
-        this.name = this.name.trim().toLowerCase();
+    public String normalizeName() {
+        return this.name.trim();
     }
 }

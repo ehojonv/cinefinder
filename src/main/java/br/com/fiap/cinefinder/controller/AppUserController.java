@@ -23,6 +23,7 @@ import br.com.fiap.cinefinder.dto.UserDto;
 import br.com.fiap.cinefinder.filters.Specifications;
 import br.com.fiap.cinefinder.filters.UserFilter;
 import br.com.fiap.cinefinder.service.AppUserService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -52,14 +53,14 @@ public class AppUserController {
 
     @PostMapping
     @ResponseStatus(code = CREATED)
-    public EntityModel<GetUserDto> createUser(@RequestBody UserDto user) {
+    public EntityModel<GetUserDto> createUser(@RequestBody @Valid UserDto user) {
         log.info("criando novo usuário: {}", user);
         return service.save(user);
 
     }
 
     @PutMapping("{id}")
-    public EntityModel<GetUserDto> updateUser(@PathVariable Long id, @RequestBody UserDto updUser) {
+    public EntityModel<GetUserDto> updateUser(@PathVariable Long id, @RequestBody @Valid UserDto updUser) {
         log.info("atualizando usuário id: {} com os dados: {}", id, updUser);
         return service.update(id, updUser);
 

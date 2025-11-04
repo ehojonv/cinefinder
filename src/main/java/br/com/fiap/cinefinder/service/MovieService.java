@@ -16,19 +16,21 @@ import br.com.fiap.cinefinder.controller.MovieController;
 import br.com.fiap.cinefinder.dto.GetMovieDto;
 import br.com.fiap.cinefinder.dto.MovieDto;
 import br.com.fiap.cinefinder.model.Movie;
+import br.com.fiap.cinefinder.repository.GenreRepo;
 import br.com.fiap.cinefinder.repository.MovieRepo;
+import br.com.fiap.cinefinder.repository.ReviewRepo;
 
 @Service
 public class MovieService {
 
     private final MovieRepo repo;
-    private final ReviewService reviewService;
-    private final GenreService genreService;
+    private final ReviewRepo reviewRepo;
+    private final GenreRepo genreRepo;
 
-    public MovieService(MovieRepo repo, ReviewService reviewService, GenreService genreService) {
+    public MovieService(MovieRepo repo, ReviewRepo reviewRepo, GenreRepo genreRepo) {
         this.repo = repo;
-        this.reviewService = reviewService;
-        this.genreService = genreService;
+        this.reviewRepo = reviewRepo;
+        this.genreRepo = genreRepo;
     }
 
     public Page<EntityModel<GetMovieDto>> getAll(Pageable pageable) {
@@ -43,19 +45,26 @@ public class MovieService {
         var existing = findByIdOrThrow(id);
         existing.setTitle(upd.title() != null ? upd.title() : existing.getTitle());
         existing.setSynopsis(upd.synopsis() != null ? upd.synopsis() : existing.getSynopsis());
-        existing.setGenres(upd.genresIds() != null ? genreService.findAllByIds(upd.genresIds()) : existing.getGenres());
-        return save(upd);
+        if (upd.genresIds() != null) {
+            genreRepo.findAllById(List.of(upd.genresIds())).forEach(g -> existing.addGenre(g));
+        }
+        return toModel(repo.save(existing));
     }
 
-    public EntityModel<GetMovieDto> save(MovieDto movieToSave) {
+    public EntityModel<GetMovieDto> save(MovieDto nMovie) {
         var movie = Movie.builder()
-                .title(movieToSave.title())
-                .synopsis(movieToSave.synopsis())
-                .releaseDate(movieToSave.releaseDate())
-                .genres(genreService.findAllByIds(movieToSave.genresIds()))
+                .title(nMovie.title())
+                .synopsis(nMovie.synopsis())
+                .releaseDate(nMovie.releaseDate())
+                .genres(nMovie.genresIds() != null ? genreRepo.findAllById(List.of(nMovie.genresIds())) : List.of())
                 .build();
-        reviewService.findAllByIds(movieToSave.reviewsIds()).forEach(r -> r.associateToMovie(movie));
+
+        if (nMovie.reviewsIds() != null) {
+            reviewRepo.findAllById(List.of(nMovie.reviewsIds())).forEach(r -> r.associateToMovie(movie));
+        }
+
         movie.calculateRating();
+        
         return toModel(repo.save(movie));
     }
 

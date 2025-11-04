@@ -8,15 +8,15 @@ import java.lang.annotation.Target;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = PasswordValidator.class)
+@Target({ ElementType.FIELD })
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Password {
 
-    String message() default "{password.invalid.message}";
+	String message() default "{password.invalid.message}";
 
-	Class<?>[] groups() default { };
+	Class<?>[] groups() default {};
 
-	Class<? extends Payload>[] payload() default { };
-    
+	Class<? extends Payload>[] payload() default {};
+
 }

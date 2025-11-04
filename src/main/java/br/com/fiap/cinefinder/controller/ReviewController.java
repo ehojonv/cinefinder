@@ -23,6 +23,7 @@ import br.com.fiap.cinefinder.dto.ReviewDto;
 import br.com.fiap.cinefinder.filters.ReviewFilter;
 import br.com.fiap.cinefinder.filters.Specifications;
 import br.com.fiap.cinefinder.service.ReviewService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -52,13 +53,13 @@ public class ReviewController {
 
     @PostMapping
     @ResponseStatus(code = CREATED)
-    public EntityModel<GetReviewDto> createReview(@RequestBody ReviewDto review) {
+    public EntityModel<GetReviewDto> createReview(@RequestBody @Valid ReviewDto review) {
         log.info("criando novo review: {}", review);
         return service.save(review);
     }
 
     @PutMapping("{id}")
-    public EntityModel<GetReviewDto> updateReview(@PathVariable Long id, @RequestBody ReviewDto upd) {
+    public EntityModel<GetReviewDto> updateReview(@PathVariable Long id, @RequestBody @Valid ReviewDto upd) {
         log.info("atualizando review id: {} com os dados: {}", id, upd);
         return service.update(id, upd);
     }
