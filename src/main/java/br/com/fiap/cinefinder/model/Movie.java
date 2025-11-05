@@ -2,6 +2,8 @@ package br.com.fiap.cinefinder.model;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +74,7 @@ public class Movie {
                 .mapToDouble(Review::getRate)
                 .average()
                 .ifPresentOrElse(
-                        avg -> this.rating = avg,
+                        avg -> this.rating = new BigDecimal(avg).setScale(2, RoundingMode.CEILING).doubleValue(),
                         () -> this.rating = 0.0);
     }
 
