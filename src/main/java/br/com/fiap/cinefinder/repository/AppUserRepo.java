@@ -8,5 +8,5 @@ import br.com.fiap.cinefinder.model.AppUser;
 
 @Repository
 public interface AppUserRepo extends JpaRepository<AppUser, Long>, JpaSpecificationExecutor<AppUser> {
-    
+
 }

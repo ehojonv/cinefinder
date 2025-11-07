@@ -36,7 +36,8 @@ public class MovieController {
     }
 
     @GetMapping
-    public Page<EntityModel<GetMovieDto>> getAllMovies(@PageableDefault(size = 10, sort = "id", direction = Direction.DESC) Pageable pageable) {
+    public Page<EntityModel<GetMovieDto>> getAllMovies(
+            @PageableDefault(size = 10, sort = "id", direction = Direction.DESC) Pageable pageable) {
         log.info("recuperando todos os movies");
         return service.getAll(pageable);
     }

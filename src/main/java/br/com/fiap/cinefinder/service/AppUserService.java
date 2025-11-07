@@ -37,17 +37,17 @@ public class AppUserService {
                 return toModel(findByIdOrThrow(id));
         }
 
-        public EntityModel<GetUserDto> update(Long id,  UserDto upd) {
+        public EntityModel<GetUserDto> update(Long id, UserDto upd) {
                 var existing = findByIdOrThrow(id);
                 existing.setUsername(upd.username() != null ? upd.username() : existing.getUsername());
                 existing.setEmail(upd.email() != null ? upd.email() : existing.getEmail());
                 existing.setDateOfBirth(
                                 upd.dateOfBirth() != null ? upd.dateOfBirth() : existing.getDateOfBirth());
-                existing.setPassword(upd.password() != null ? upd.password() : existing.getPassword());
+                existing.setPassword(upd.password() != null ? encoder.encode(upd.password()) : encoder.encode(existing.getPassword()));
                 return toModel(repo.save(existing));
         }
 
-        public EntityModel<GetUserDto> save( UserDto nUser) {
+        public EntityModel<GetUserDto> save(UserDto nUser) {
                 var user = AppUser.builder()
                                 .username(nUser.username())
                                 .email(nUser.email())

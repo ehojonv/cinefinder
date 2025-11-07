@@ -36,7 +36,8 @@ public class FlowController {
     }
 
     @GetMapping
-    public Page<EntityModel<Flow>> getAllFlows(@PageableDefault(size = 10, sort = "id", direction = Direction.DESC) Pageable pageable) {
+    public Page<EntityModel<Flow>> getAllFlows(
+            @PageableDefault(size = 10, sort = "id", direction = Direction.DESC) Pageable pageable) {
         log.info("recuperando todos os flows");
         return service.getAll(pageable);
     }

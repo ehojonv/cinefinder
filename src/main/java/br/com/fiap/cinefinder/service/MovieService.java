@@ -64,7 +64,7 @@ public class MovieService {
         }
 
         movie.calculateRating();
-        
+
         return toModel(repo.save(movie));
     }
 

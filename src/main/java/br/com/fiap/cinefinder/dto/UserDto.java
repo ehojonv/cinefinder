@@ -8,9 +8,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 
 public record UserDto(
-        @NotBlank String username,
-        @Email String email,
-        @Password String password,
-        @Past LocalDate dateOfBirth) {
+                @NotBlank String username,
+                @Email String email,
+                @Password String password,
+                @Past LocalDate dateOfBirth) {
 
 }

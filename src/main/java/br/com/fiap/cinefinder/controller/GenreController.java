@@ -41,7 +41,7 @@ public class GenreController {
 
     @GetMapping
     public Page<EntityModel<GetGenreDto>> getAllGenres(GenreFilter filter,
-        @PageableDefault(size = 10, sort = "id", direction = Direction.DESC) Pageable pageable) {
+            @PageableDefault(size = 10, sort = "id", direction = Direction.DESC) Pageable pageable) {
         log.info("recuperando todos os genres");
         Specification<Genre> specs = Specifications.buildGenre(filter);
         return service.getAll(specs, pageable);

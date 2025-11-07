@@ -113,7 +113,7 @@ public class Specifications {
                         predicates,
                         root.join("cf_movies").get("id").in(List.of(filter.moviesIds())));
             }
-            
+
             return predicates;
         };
     }
